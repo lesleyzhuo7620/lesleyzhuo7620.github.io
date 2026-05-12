@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卓陶然 - Interactive Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: none;
+        }
+
+        body {
+            font-family: 'Comfortaa', 'Noto Sans SC', cursive;
+            background: #f7f1f2;
+            color: #5a5a6b;
+            line-height: 1.6;
+            overflow: auto;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .background-video {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .background-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 248, 247, 0.28);
+            z-index: -1;
+        }
+
+        .page-frame {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(760px, calc(100% - 48px));
+            border-left: 1px solid rgba(145, 139, 135, 0.45);
+            border-right: 1px solid rgba(145, 139, 135, 0.45);
+            background: rgba(236, 234, 232, 0.94);
+            box-shadow: 0 0 0 1px rgba(145, 139, 135, 0.20),
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .scroll-container {
+            width: 100%;
+            overflow: visible;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-section {
+            min-height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 40px;
+            position: relative;
+            width: 100%;
+            pointer-events: auto;
+        }
+
+        .content-section.active {
+            position: relative;
+            pointer-events: auto;
+        }
+
+        .section-inner {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ==================== 头部 ==================== */
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.84);
+            border-radius: 40px;
+            padding: 30px 25px;
+            box-shadow: 0 0 0 8px rgba(120, 108, 98, 0.10),
+                        0 20px 60px rgba(212, 163, 143, 0.15),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .avatar-wrapper {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4a3a3 0%, #e8b4b8 50%, #d4b4d4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 10px 35px rgba(212, 163, 143, 0.25),
+                        inset -2px -2px 5px rgba(255, 255, 255, 0.4);
+            overflow: hidden;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #a07c7c;
+            margin-bottom: 5px;
+            letter-spacing: 0.05em;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: #9a9aaa;
+            margin-bottom: 3px;
+            font-weight: 300;
+        }
+
+        .header .subtitle {
+            color: #d4a3a3;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        /* ==================== 内容 ==================== */
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #a07c7c;
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 0.03em;
+        }
+
+        /* ==================== 卡片 ==================== */
+        .soft-card {
+            background: rgba(255, 255, 255, 0.82);
+            border-radius: 28px;
+            padding: 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 0 0 8px rgba(120, 108, 98, 0.10),
+                        0 10px 40px rgba(212, 163, 143, 0.1),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .soft-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 45px rgba(212, 163, 143, 0.15),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .soft-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #a07c7c;
+            margin: 0;
+            flex: 1;
+        }
+
+        .expand-icon {
+            font-size: 1.2rem;
+            color: #d4a3a3;
+            min-width: 25px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .soft-card p {
+            color: #7a7a8a;
+            line-height: 1.7;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* ==================== 扩展内容 ==================== */
+        .card-expanded-content {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(212, 163, 143, 0.2);
+            animation: slideDown 0.3s ease;
+        }
+
+        .card-expanded-content.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .video-gallery {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .gallery-item {
+            background: linear-gradient(135deg, #d4a3a3, #e8b4b8);
+            border-radius: 12px;
+            padding: 30px 15px;
+            text-align: center;
+            font-size: 2rem;
+            color: white;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(212, 163, 143, 0.15);
+            overflow: hidden;
+        }
+
+        .gallery-item iframe {
+            width: 100%;
+            height: 200px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        /* Lightbox 放大样式 */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.75);
+            z-index: 1200;
+            padding: 20px;
+        }
+
+        .lightbox img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            cursor: zoom-out;
+        }
+
+        .expandable-image { cursor: zoom-in; display: block; }
+        .lightbox .expandable-image { cursor: zoom-out; }
+
+        .video-item {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(212, 163, 143, 0.15);
+            position: relative;
+            background: #000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+        }
+
+        .video-item:hover {
+            box-shadow: 0 8px 20px rgba(212, 163, 143, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .video-thumbnail {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: linear-gradient(135deg, #d4a3a3 0%, #e8b4b8 50%, #d4b4d4 100%);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .video-thumbnail.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .video-item:hover .play-button {
+            transform: scale(1.15);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .video-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .video-container.active {
+            opacity: 1;
+            z-index: 2;
+            pointer-events: auto;
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0;
+        }
+
+        .expanded-text {
+            color: #7a7a8a;
+            line-height: 1.7;
+            font-size: 0.85rem;
+        }
+
+        .expanded-text strong {
+            color: #a07c7c;
+        }
+
+        /* ==================== 网格 ==================== */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 0 0 6px rgba(120, 108, 98, 0.08),
+                        0 8px 20px rgba(212, 163, 143, 0.08),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .stat-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(212, 163, 143, 0.12),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #9a9aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #a07c7c;
+        }
+
+        .curiosity-card {
+            background: rgba(255, 255, 255, 0.82);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 0 0 6px rgba(120, 108, 98, 0.08),
+                        0 8px 30px rgba(212, 163, 143, 0.08),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .curiosity-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(212, 163, 143, 0.12),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .curiosity-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #a07c7c;
+            margin-bottom: 6px;
+        }
+
+        .curiosity-card p {
+            font-size: 0.8rem;
+            color: #7a7a8a;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* 静态卡片 */
+        .static-card {
+            background: rgba(255, 255, 255, 0.82);
+            border-radius: 28px;
+            padding: 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 0 0 8px rgba(120, 108, 98, 0.10),
+                        0 10px 40px rgba(212, 163, 143, 0.1),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .static-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 45px rgba(212, 163, 143, 0.15),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        .static-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #a07c7c;
+            margin: 0 0 10px 0;
+        }
+
+        .static-card p {
+            color: #7a7a8a;
+            line-height: 1.7;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* ==================== 梦想框 ==================== */
+        .dream-card {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.82);
+            border-radius: 28px;
+            padding: 40px 25px;
+            box-shadow: 0 0 0 8px rgba(120, 108, 98, 0.10),
+                        0 10px 40px rgba(212, 163, 143, 0.1),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .dream-card .dream-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .dream-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #a07c7c;
+            margin-bottom: 12px;
+        }
+
+        .dream-card p {
+            color: #9a9aaa;
+            font-size: 0.9rem;
+        }
+
+        /* ==================== 滚动提示 ==================== */
+        .scroll-indicator {
+            display: none;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-8px); }
+        }
+
+        .scroll-indicator i {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        /* ==================== 侧边导航 ==================== */
+        .sidebar-nav {
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 200;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(212, 163, 143, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(212, 163, 143, 0.5);
+            position: relative;
+        }
+
+        .nav-dot:hover {
+            background: rgba(212, 163, 143, 0.5);
+            transform: scale(1.3);
+        }
+
+        .nav-dot.active {
+            background: #d4a3a3;
+            border-color: #a07c7c;
+            box-shadow: 0 0 15px rgba(212, 163, 143, 0.4);
+            width: 14px;
+            height: 14px;
+        }
+
+        .nav-tooltip {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.85);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #a07c7c;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(212, 163, 143, 0.15);
+            z-index: -1;
+        }
+
+        .nav-dot:hover .nav-tooltip {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 768px) {
+            .page-frame {
+                width: calc(100% - 24px);
+            }
+
+            .content-section {
+                padding: 40px 20px;
+                height: auto;
+                min-height: 100vh;
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                opacity: 1;
+            }
+
+            .content-section.active {
+                transform: none;
+            }
+
+            .section-inner {
+                max-width: 100%;
+            }
+
+            h2 { font-size: 1.6rem; }
+
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .info-grid { grid-template-columns: 1fr; }
+
+            .scroll-indicator { display: none; }
+            .sidebar-nav { display: none; }
+
+            .header h1 { font-size: 1.5rem; }
+            .soft-card h3 { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<video class="background-video" autoplay muted loop playsinline>
+    <source src="background3.mp4" type="video/mp4">
+</video>
+<div class="background-overlay"></div>
+<div class="page-frame"></div>
+
+<div class="sidebar-nav">
+    <div class="nav-dot active" onclick="goToSection(0)">
+        <div class="nav-tooltip">关于我</div>
+    </div>
+    <div class="nav-dot" onclick="goToSection(1)">
+        <div class="nav-tooltip">好奇心</div>
+    </div>
+    <div class="nav-dot" onclick="goToSection(2)">
+        <div class="nav-tooltip">探索</div>
+    </div>
+    <div class="nav-dot" onclick="goToSection(3)">
+        <div class="nav-tooltip">研究</div>
+    </div>
+    <div class="nav-dot" onclick="goToSection(4)">
+        <div class="nav-tooltip">实践</div>
+    </div>
+    <div class="nav-dot" onclick="goToSection(5)">
+        <div class="nav-tooltip">梦想</div>
+    </div>
+</div>
+
+<div class="scroll-container">
+    <!-- 第一屏：关于我 -->
+    <div class="content-section active">
+        <div class="section-inner">
+            <div class="header">
+                <div class="avatar-wrapper"><img src="头像.jpg" alt="头像" class="avatar-img"></div>
+                <h1>卓陶然</h1>
+                <p>Lesley Zhuo</p>
+                <p class="subtitle">探索者 · 研究者 · 实践者</p>
+            </div>
+
+            <div style="margin-top: 35px;">
+                <h2>关于我</h2>
+                <div class="info-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">电话</div>
+                        <div class="stat-value">183 5887 8389</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">生日</div>
+                        <div class="stat-value">2005.09.02</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">籍贯</div>
+                        <div class="stat-value">浙江温州</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">邮箱</div>
+                        <div class="stat-value">2372290076@qq.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第二屏：好奇心 -->
+    <div class="content-section">
+        <div class="section-inner">
+            <h2>好奇心地图</h2>
+            
+            <div class="soft-card" onclick="toggleExpand(event)">
+                <div class="card-header">
+                    <h3>🎹 钢琴与节奏</h3>
+                    <span class="expand-icon">+</span>
+                </div>
+                <p>从3岁开始，在黑白键的跳跃中培养对美的敏锐感知。</p>
+                <div class="card-expanded-content">
+                    <div class="video-gallery">
+                        <div class="video-item" onclick="playVideo(event, 'BV1VE41137jY', this)">
+                            <div class="video-thumbnail">
+                                <img src="https://i2.hdslb.com/bfs/archive/6330faea71863726bbc95dec4cec83e99c604e86.jpg" alt="视频封面" class="video-cover" data-bvid="BV1VE41137jY">
+                            </div>
+                            <div class="play-button">▶</div>
+                            <div class="video-container" id="video-BV1VE41137jY">
+                                <iframe src="https://player.bilibili.com/player.html?bvid=BV1VE41137jY" allowfullscreen frameborder="0"></iframe>
+                            </div>
+                        </div>
+
+                        <div class="video-item" onclick="playVideo(event, 'BV177411t7QS', this)">
+                            <div class="video-thumbnail">
+                                <img src="https://i2.hdslb.com/bfs/archive/d5f0f83dfd56461c7464bd27157cc826b0c48bb6.jpg" alt="视频封面" class="video-cover" data-bvid="BV177411t7QS">
+                            </div>
+                            <div class="play-button">▶</div>
+                            <div class="video-container" id="video-BV177411t7QS">
+                                <iframe src="https://player.bilibili.com/player.html?bvid=BV177411t7QS" allowfullscreen frameborder="0"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="expanded-text">
+                        钢琴磨练我的耐性，让我深知厚积薄发的学习规律。又带给我对节奏感的训练，就像人生一样，采准节拍才能谱写华丽的乐章。
+                    </div>
+                </div>
+            </div>
+
+            <div class="soft-card" onclick="toggleExpand(event)">
+                <div class="card-header">
+                    <h3>🎤 自媒体运营</h3>
+                    <span class="expand-icon">+</span>
+                </div>
+                <p>通过内容创作和社群运营，将个人想法传递给更多人。</p>
+                <div class="card-expanded-content">
+                    <div class="image-gallery">
+                        <div class="gallery-item" style="grid-column: 1 / -1; padding: 0;">
+                            <img src="新媒体.png" alt="新媒体" class="expandable-image" style="width:100%;height:auto;border-radius:12px;display:block;">
+                        </div>
+                    </div>
+                    <div class="expanded-text">
+                        从内容策划到粉丝互动，每一步都是对传播力的深度思考。用故事连接人心，用数据优化策略。
+                    </div>
+                </div>
+            </div>
+
+            <div class="soft-card" onclick="toggleExpand(event)">
+                <div class="card-header">
+                    <h3>✈️ 旅行探险家</h3>
+                    <span class="expand-icon">+</span>
+                </div>
+                <p>跨越山海的旅行，打破思维边界探索可能性。</p>
+                <div class="card-expanded-content">
+                    <div class="image-gallery">
+                        <div class="gallery-item" style="grid-column: 1 / -1; padding: 0;">
+                            <img src="旅行.png" alt="旅行" class="expandable-image" style="width:100%;height:auto;border-radius:12px;display:block;">
+                        </div>
+                    </div>
+                    <div class="expanded-text">
+                        每一次旅行都是一次自我发现的过程。在陌生的地方，我学会了适应变化、拥抱多样性，和全新视角理解这个世界。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第三屏：探索 -->
+    <div class="content-section">
+        <div class="section-inner">
+            <h2>探索历程</h2>
+            
+            <div class="static-card">
+                <h3>🎓 浙江大学·初见</h3>
+                <p>刚刚步入求是园，我感觉万分欣喜。但很快这份喜悦褪去，大学独特的教学方式和枯燥的专业课，让我逐渐对本专业失去了信心。每当听闻就业形势严峻的消息，懵懂的我也开始苦恼。好在我依然拥有探索的热情和独立思考的能力，开始寻找属于自己的路。</p>
+            </div>
+
+            <div class="static-card">
+                <h3>🚀 南洋理工·追寻</h3>
+                <p>不满足于现状的我，开始主动求变，向更高处挑战。短短2个月内，我独自战斗，一举以半奖拿下NTU Information Engineering and Media专业offer。回想当时一手汇总信息、一手准备IELTS和AST考试、一手写文书的时光，仍感到青春的热血沸腾。</p>
+            </div>
+
+            <div class="static-card">
+                <h3>💡 困境视角·转换</h3>
+                <p>在等待Offer的半年内，我换了个角度看待浙大带给我的磨练。也许本专业不适合我，但辅修社会学正中我下怀；也许农学就业严峻，但和市场营销学等学科交叉融合，却表现出很多新的可能。</p>
+            </div>
+
+            <div class="static-card">
+                <h3>🏆 成就收获·成长</h3>
+                <p>适应了ZJU生活的我，加入了一系列教授团队，参与跨越社会学、传媒、市场营销学等多学科的科研与竞赛项目；同时对本专业也多了耐心，获得浙江大学学业优秀标兵、浙江大学三等奖学金等难能可贵的奖项。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第四屏：研究 -->
+    <div class="content-section">
+        <div class="section-inner">
+            <h2>研究项目</h2>
+
+            <div class="soft-card" onclick="toggleExpand(event)">
+                <div class="card-header">
+                    <h3>📊 青少年性别观念的形成机制及其健康效应</h3>
+                    <span class="expand-icon">+</span>
+                </div>
+                <p>浙江省教育厅一般科研项目</p>
+                <div class="card-expanded-content">
+                    <div class="expanded-text">
+                        <strong>我的角色</strong><br>
+                        构建青少年性别观念研究的多维理论框架<br> 
+                        搭建实证研究数据库，以支持定量数据分析<br>
+                        <strong>研究过程</strong><br>
+                        1 文献梳理<br>
+                        系统阅读社会学与心理学关于性别观念与社会化过程的研究文献。<br>
+                        2 理论框架构建<br>
+                        搭建研究框架，建立家庭社会化、学校环境、同伴环境、生命周期经验四个因素水平，将其纳入性别观念形成机制的分析之中。<br>
+                        3 测量工具设计<br>
+                        搭建四点式Likert态度量表，建立家庭权力、母亲就业、家庭分工、就业机会、领导能力、家庭优先6个维度指标，设计问卷调查模型。<br>
+                        4 数据整理<br>
+                        整理调研数据，并参与本土化性别观念指标体系的构建。<br>
+                    </div>
+                </div>
+            </div>
+
+            <div class="soft-card" onclick="toggleExpand(event)">
+                <div class="card-header">
+                    <h3>🏘️ 我国乡村大龄单身男性问题</h3>
+                    <span class="expand-icon">+</span>
+                </div>
+                <p>浙江大学社会学系 2025 年“返乡调研”项目</p>
+                <div class="card-expanded-content">
+                    <div class="expanded-text">
+                        <strong>我的角色</strong><br>
+                        行政村概况实地调研，完成问卷调查与半结构化个案访谈 ；提炼并定性分析我国乡村大龄单身男性问题的成因，并提出建议对策。<br>
+                        <strong>研究过程</strong><br>
+                        1 资料整理<br>
+                        查阅国内关于乡村婚姻结构与大龄单身男性问题的相关研究与政策资料，为田野调查建立理论与问题框架。<br>
+                        2 实地背景调研<br>
+                        前往行政村开展实地走访，收集村庄人口结构、婚姻状况、经济发展水平等基础信息，以建立整体社会背景。<br>
+                        3 问卷调查及半结构化访谈<br>
+                        在村庄范围内开展问卷调查，了解适婚人口规模、婚姻观念及婚姻现状；针对部分大龄单身男性，从个人生活、外出务工、婚恋经历、外部影响、婚恋观念六个维度开展半结构化访谈。<br>
+                        4 分析与总结<br>
+                        对调研数据与访谈材料归纳整理并进行定性分析，从人口结构、经济条件、城乡流动及婚姻观念等维度分析问题成因，并提出关于社会保障与养老危机、社会问题与治理难度的隐忧和建议。<br>
+                    </div>
+                </div>
+            </div>
+
+            <div class="soft-card" onclick="toggleExpand(event)">
+                <div class="card-header">
+                    <h3>🍎 “一果一码一品”果实生物特征动态防伪体系</h3>
+                    <span class="expand-icon">+</span>
+                </div>
+                <p>浙江大学第十八届“蒲公英”大学生创新大赛金奖</p>
+                <div class="card-expanded-content">
+                    <div class="expanded-text">
+                        <strong>研究问题</strong><br>
+                        关注农业生产与市场营销策略的结合方式，构建兼具品质认证、产品溯源与品牌传播功能的农业产品体系。<br>
+                        <strong>我的角色</strong><br>
+                        开展市场调研和消费者行为研究；负责市场分析与营销策略设计；撰写商业计划书核心部分<br>
+                        <strong>研究过程</strong><br>
+                        1 市场调研与行业分析<br>
+                        对我国特色果品产业的发展现状进行调研，分析当前果品市场在品质管控、产品防伪与品牌建设等方面存在的核心痛点，并评估相关技术与市场的发展趋势。<br>
+                        2 消费者行为研究<br>
+                        通过市场数据分析与用户需求调研，研究目标消费者群体定位及其在水果消费中的偏好、信任机制与购买决策因素，为产品定位与品牌策略提供依据。<br> 
+                        3 市场分析与战略设计<br>
+                        在调研基础上开展STP分析，围绕“检测—防伪—品牌赋能”的技术体系，设计整体市场策略，探索农业产品品牌化与高端化的发展路径。<br> 
+                        4 营销策略与商业模式构建<br>
+                        运用4P模型，设计整体营销策略方案，推动技术价值向消费者认知的转化，形成完整的商业运营逻辑。 <br>
+                        5 商业计划书撰写与方案整合<br>
+                        整合市场研究与营销策略成果，撰写商业计划书核心部分，系统呈现项目的市场逻辑、商业模式与发展规划。<br>
+                    </div>
+                </div>
+            </div>
+
+            <div class="soft-card" onclick="toggleExpand(event)">
+                <div class="card-header">
+                    <h3>📚 媒体融合研究</h3>
+                    <span class="expand-icon">+</span>
+                </div>
+                <p>浙江大学2025年“启真问学”科研项目</p>
+                <div class="card-expanded-content">
+                    <div class="expanded-text">
+                        <strong>研究问题</strong><br>
+                        20世纪80年代技术创新如何推动媒体系统的转型，以及媒体形态变化如何影响社会传播结构与文化表达。<br>
+                        <strong>我的角色</strong><br>
+                        构建自20世纪80年代以来的媒体发展分析框架 ；参与《媒体融合》书籍的编撰工作 ；整理相关案例与历史材料 <br>
+                        <strong>研究过程</strong><br>
+                        1 历史脉络梳理<br>
+                        回顾20世纪80年代以来媒体技术与传播平台的发展过程。<br>
+                        2 分析框架构建<br>
+                        从技术发展、商业模式、文化叙事、传播生态四个维度分析媒体融合。<br>
+                        3 案例整理<br>
+                        收集典型媒体转型案例，并进行系统整理与分析。<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第五屏：实践 -->
+    <div class="content-section">
+        <div class="section-inner">
+            <h2>实践经历</h2>
+
+            <div class="soft-card" onclick="toggleExpand(event)">
+                <div class="card-header">
+                    <h3>📱 新媒体运营</h3>
+                    <span class="expand-icon">+</span>
+                </div>
+                <p>丽水市骏腾汽车销售服务有限公司</p>
+                <div class="card-expanded-content">
+                    <div class="expanded-text">
+                        <strong>1.品牌种草内容运营</strong><br>
+                        结合一汽奔腾小马车型卖点与用户使用场景，策划适合消费者传播的真实体验型内容选题（如日常通勤、城市出游、年轻人第一辆车等），并形成自媒体（抖音同城、汽车之家、懂车帝等）传播矩阵，提升内容的生活化和吸引度。<br>
+                        <strong>2.多渠道用户社群搭建</strong><br>
+                        根据线上平台后台数据进行用户数据分析，筛选潜在用户并主动沟通合作意向，同时建立用户社群聚集地，维持关系的同时形成稳定的本地传播网络。在线下对到店用户主动发起邀约，将线下资源转移至线上，扩大传播范围，便捷化地持续跟进用户关系。<br>
+                        <strong>3.KOC拓展与内容共创</strong><br>
+                        筛选具有典型性的一汽奔腾小马用户或本地自媒体博主，邀请其成为“小马新品体验官”，拍摄纪实与创意兼具的叙事性用户体验短片，并通过一汽奔腾官方社交媒体账号传播，在宏观层面上扩大消费者的好评传播。<br>
+                    </div>
+                </div>
+            </div>
+
+            <div class="soft-card" onclick="toggleExpand(event)">
+                <div class="card-header">
+                    <h3>📺 广告部</h3>
+                    <span class="expand-icon">+</span>
+                </div>
+                <p>上海教育电视台</p>
+                <div class="card-expanded-content">
+                    <div class="expanded-text">
+                        <strong>1. 市场调研与行业分析</strong><br>
+                        通过桌面研究与案例分析，进行中小学生知识付费产品（如作业帮、猿辅导、洋葱学园等）竞品结构分析，为项目产品定位与内容方向提供实证支撑。<br>
+                        <strong>2. 用户研究与需求洞察</strong><br>
+                        基于目标用户群体（上海市中小学生群体），整理用户行为特征与内容消费偏好，分析用户在知识付费场景中的学习动机与付费驱动因素。<br>
+                        <strong>3. 跨团队项目协同沟通</strong><br>
+                        与项目版权资源背靠方（如华东师范大学出版社、上海音乐学院出版社）及项目落地制作方（如上海中小学名师工作室、上海头部教培机构）进行合作谈判。<br>
+                    </div>
+                </div>
+            </div>
+
+            <div class="soft-card" onclick="toggleExpand(event)">
+                <div class="card-header">
+                    <h3>🎪 大型活动部</h3>
+                    <span class="expand-icon">+</span>
+                </div>
+                <p>温州市新闻传媒中心</p>
+                <div class="card-expanded-content">
+                    <div class="expanded-text">
+                        <strong>1.活动策划与方案设计</strong><br>
+                        参与公共宣传类大型活动策划（如温州市文明办“全民反诈，老少同行”活动，温州市公安局“义市微光，爱聚汪星”活动），负责线上线下整合传播方案的活动环节设计、活动流程规划及执行方案撰写。 <br>
+                        <strong>2.活动流程管理</strong><br>
+                        独立完成现场流程表的撰写与优化，明确主持人串词、舞台流程节点、嘉宾出场安排及各部门协同节点，保障活动执行节奏与现场秩序。<br>
+                        <strong>3.活动现场统筹协调</strong><br>
+                        参与大型线下活动现场执行工作，对接舞美、摄影摄像、主持人及志愿者团队，处理现场突发情况，确保活动顺利落地。<br>
+                        <strong>4. 传播策略设计与内容发布</strong><br>
+                        设计多渠道媒体传播节奏与内容形式（新闻稿、短视频素材、图文稿件等）。参与活动新闻稿撰写与素材整理，完成官方媒体稿件内容生产。<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第六屏：梦想 -->
+    <div class="content-section">
+        <div class="section-inner">
+            <div class="dream-card">
+                <div class="dream-icon">🐕</div>
+                <h3>下一章</h3>
+                <p style="font-size: 1.2rem; font-weight: 600; color: #a07c7c; margin-bottom: 12px;">未来，拥有一只大金毛。</p>
+                <p>在属于自己的小世界里，享受生活的美好时刻。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="scroll-indicator">
+    <i class="fas fa-chevron-down"></i>
+    <span>向下滚动</span>
+</div>
+
+<script>
+    let currentSection = 0;
+    let lastScrollTime = 0;
+    const sections = document.querySelectorAll('.content-section');
+    const totalSections = sections.length;
+    const scrollThrottle = 1000; // 最小滚动间隔
+
+    function showSection(index) {
+        // 移除所有active类
+        sections.forEach(section => section.classList.remove('active'));
+        
+        // 更新导航点
+        const navDots = document.querySelectorAll('.nav-dot');
+        navDots.forEach(dot => dot.classList.remove('active'));
+        
+        // 添加当前活跃类
+        if (index >= 0 && index < totalSections) {
+            sections[index].classList.add('active');
+            if (navDots[index]) {
+                navDots[index].classList.add('active');
+            }
+            currentSection = index;
+        }
+    }
+
+    function nextSection() {
+        if (currentSection < totalSections - 1) {
+            showSection(currentSection + 1);
+        }
+    }
+
+    function prevSection() {
+        if (currentSection > 0) {
+            showSection(currentSection - 1);
+        }
+    }
+
+    // 监听鼠标滚轮 - 允许正常滚动
+    document.addEventListener('wheel', (e) => {
+        // 正常滚动，不进行任何拦截
+    }, { passive: true });
+
+    // 监听页面滚动，更新导航点状态
+    window.addEventListener('scroll', () => {
+        const sections = document.querySelectorAll('.content-section');
+        const navDots = document.querySelectorAll('.nav-dot');
+        
+        let currentIndex = 0;
+        
+        sections.forEach((section, index) => {
+            const rect = section.getBoundingClientRect();
+            // 如果section的顶部在视口中心上方，更新currentIndex
+            if (rect.top <= window.innerHeight / 2) {
+                currentIndex = index;
+            }
+        });
+        
+        // 更新导航点
+        navDots.forEach((dot, index) => {
+            dot.classList.remove('active');
+            if (index === currentIndex) {
+                dot.classList.add('active');
+            }
+        });
+    });
+
+    // 监听键盘 - 允许正常操作
+    // 键盘事件不再需要拦截
+
+    // 展开/收起函数
+    function toggleExpand(event) {
+        event.stopPropagation();
+        const card = event.currentTarget;
+        const expandedContent = card.querySelector('.card-expanded-content');
+        const expandIcon = card.querySelector('.expand-icon');
+        
+        if (expandedContent) {
+            expandedContent.classList.toggle('active');
+            
+            if (expandedContent.classList.contains('active')) {
+                expandIcon.textContent = '−';
+            } else {
+                // 关闭时暂停所有视频，恢复缩略图显示
+                expandIcon.textContent = '+';
+                const videoContainers = expandedContent.querySelectorAll('.video-container');
+                const thumbnails = expandedContent.querySelectorAll('.video-thumbnail');
+                
+                videoContainers.forEach((container, index) => {
+                    if (container.classList.contains('active')) {
+                        container.classList.remove('active');
+                        const iframe = container.querySelector('iframe');
+                        if (iframe) {
+                            const oldSrc = iframe.src;
+                            iframe.src = '';
+                            setTimeout(() => {
+                                iframe.src = oldSrc;
+                            }, 100);
+                        }
+                    }
+                });
+                
+                thumbnails.forEach(thumbnail => {
+                    thumbnail.classList.remove('hidden');
+                });
+                
+                currentPlayingVideoId = null;
+            }
+        }
+    }
+
+    // 导航点点击跳转
+    function goToSection(index) {
+        const sections = document.querySelectorAll('.content-section');
+        if (sections[index]) {
+            sections[index].scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // 视频播放管理
+    let currentPlayingVideoId = null;
+
+    function playVideo(event, videoId, element) {
+        event.stopPropagation();
+        
+        const videoContainer = document.getElementById('video-' + videoId);
+        const thumbnail = element.querySelector('.video-thumbnail');
+        
+        if (!videoContainer) return;
+
+        // 如果有正在播放的视频，暂停它
+        if (currentPlayingVideoId && currentPlayingVideoId !== videoId) {
+            const previousContainer = document.getElementById('video-' + currentPlayingVideoId);
+            if (previousContainer) {
+                previousContainer.classList.remove('active');
+                // 显示该video的缩略图
+                const prevThumbnail = previousContainer.parentElement.querySelector('.video-thumbnail');
+                if (prevThumbnail) {
+                    prevThumbnail.classList.remove('hidden');
+                }
+                // 重置iframe
+                const iframe = previousContainer.querySelector('iframe');
+                if (iframe) {
+                    const oldSrc = iframe.src;
+                    iframe.src = '';
+                    setTimeout(() => {
+                        iframe.src = oldSrc;
+                    }, 100);
+                }
+            }
+        }
+
+        // 切换当前视频的显示状态
+        const isPlaying = videoContainer.classList.contains('active');
+        
+        if (!isPlaying) {
+            // 播放
+            videoContainer.classList.add('active');
+            if (thumbnail) {
+                thumbnail.classList.add('hidden');
+            }
+            currentPlayingVideoId = videoId;
+        } else {
+            // 暂停
+            videoContainer.classList.remove('active');
+            if (thumbnail) {
+                thumbnail.classList.remove('hidden');
+            }
+            currentPlayingVideoId = null;
+        }
+    }
+
+    // 初始化 - 更新导航点状态
+    document.dispatchEvent(new Event('scroll'));
+
+    // 封面已使用静态图片URL，避免跨域请求失败
+</script>
+
+<script>
+// 图片点击放大（lightbox）
+document.addEventListener('click', function(e) {
+    const img = e.target.closest('.expandable-image');
+    if (!img) return;
+
+    // 阻止后续目标/冒泡阶段触发父元素的 onclick（如 toggleExpand）
+    e.stopPropagation();
+    e.preventDefault();
+
+    // 创建遮罩
+    const box = document.createElement('div');
+    box.className = 'lightbox';
+
+    const big = document.createElement('img');
+    big.src = img.src;
+
+    box.appendChild(big);
+    document.body.appendChild(box);
+
+    // 点击遮罩或大图任意位置关闭
+    function remove() { if (box.parentNode) box.parentNode.removeChild(box); }
+    box.addEventListener('click', remove);
+    document.addEventListener('keydown', function onKey(e){ if (e.key === 'Escape') { remove(); document.removeEventListener('keydown', onKey); } });
+}, true);
+</script>
+
+</body>
+</html>
